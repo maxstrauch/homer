@@ -1,3 +1,11 @@
+v1.7.0
+======
+ * Feat: initial commit on GitHub & availability for the public
+    - Smaller improvements for this event
+    - Migration of frontent to proper vue-cli project
+    - Patches to backend API
+    - Documentation
+
 v1.6.0
 ======
  * Feat: Increased performance for status update of users in all view modi
