@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  backend:
+    image: node:14
+    volumes:
+      - ./backend:/app
+    restart: always
+    command: bash -c "cd /app && npm i && npm run dev"
+    environment:
+      PORT: 8080
+
+  frontend:
+    image: node:14
+    volumes:
+      - ./frontend:/app
+    restart: always
+    ports:
+      - "1234:8080"
+    command: bash -c "cd /app && npm i && npm run dev"

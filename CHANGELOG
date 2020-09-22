@@ -1,0 +1,56 @@
+v1.6.0
+======
+ * Feat: Increased performance for status update of users in all view modi
+ * Fix: Long names do not destroy the layout anymore
+
+v1.5.1
+======
+ * Feat: add custom user Data
+ * Feat: add reduced KIOSK view mode
+ * Fix: minor style issues
+
+v1.5.0
+======
+ * Feat: add token expiration function
+ * Fix: partial error messages
+ * Fix: minor design adaptions
+
+v1.4.0
+======
+ * Fix: Bug in password set dialog
+ * Fix: For grouped views, if all are offline: hide categories
+ * Feat: UI rework & addition of main navigation bar
+ * Feat: Minor design improvements
+ * Feat: Added about dialog
+
+v1.3.0
+======
+ * Feat: Slack notification webhook initially implemented
+
+v1.2.1
+======
+ * Hotfix: event notifications fixed
+
+v1.2.0
+======
+ * Feat: Password dialog rework & strength indicator
+ * Feat: Grid view for display & tile view
+ * Feat: User settings storage established
+ * Fix: Code cleanup
+
+v1.1.1
+======
+ * Fix: Employee Data URL transmission
+ * Fix: Employee error message, if empty response
+ * Feat: Extension of Docker image and definition
+
+v1.1.0
+======
+ * Fix: error with max filesize correctly handled as HTTP 413 & max filesize = 25 MB
+ * Feat: Toaster implementation
+ * Feat: Integration of error messages with toaster
+ * Feat: Basic implementation of webhooks
+
+v1.0.0
+======
+ * Initial release

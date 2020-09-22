@@ -1,0 +1,27 @@
+{
+  "name": "homer",
+  "version": "1.6.0",
+  "description": "Homer - The Homeoffice Manager. A simple tool to see who is where?",
+  "scripts": {
+    "dev": "docker-compose up",
+    "build": "docker build -t maxstrauch/homer:$(node -p \"require('./package').version\" | tr -d '\n') .",
+    "docker:publish": "npm run build ; docker tag maxstrauch/homer:$(node -p \"require('./package').version\" | tr -d '\n') maxstrauch/homer:latest ; docker push maxstrauch/homer"
+  },
+  "keywords": [
+    "homeoffice",
+    "NodeJS",
+    "VueJS",
+    "management",
+    "person",
+    "employees",
+    "statemanagement",
+    "visual",
+    "web-interface",
+    "docker",
+    "tool",
+    "simple",
+    "who-is-where"
+  ],
+  "author": "Maximilian Strauch <maxstrauch@googlemail.com>",
+  "license": "MIT"
+}

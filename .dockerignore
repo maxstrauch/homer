@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+.vscode/*
+!backend/data/.gitkeep
+backend/data/*
+_private
+backend/build/*
+backend/node_modules/*
+frontend/node_modules/*
