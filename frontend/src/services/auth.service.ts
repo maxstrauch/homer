@@ -4,6 +4,7 @@ import jwtDecode from 'jwt-decode';
 import Cookies from 'js-cookie';
 import { Logger, createLogger } from './logger.service';
 import { ToastService } from './toast.service';
+import { SSOEnabledResponse } from '@/models/APILoginResponse';
 
 export const LOCAL_STORAGE_SETTINGS_KEY = "homer.userData";
 export const COOKIE_TOKEN_NAME = "htoken";
@@ -60,6 +61,15 @@ export class AuthService extends RestService {
 
     isKioskView(): boolean {
         return !!this.loginToken && this.loginToken.isKioskView === true;
+    }
+
+    async isOAuth2Supported(): Promise<SSOEnabledResponse | null> {
+        try {
+            const ret = await this.httpGet<SSOEnabledResponse>('/auth/sso/supported', {}, true);
+            return ret;
+        } catch (ex) {
+            return null;
+        }
     }
 
     async login(username: string, password: string): Promise<boolean> {

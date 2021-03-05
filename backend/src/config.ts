@@ -41,5 +41,17 @@ export class Config {
         return 365;
     }
 
-}
+    static get OAUTH_SETTINGS() {
+        return {
+            externalAppBaseUrl: process.env.EXTERNAL_APP_BASE_URL || '',
+            oauth2ClientId: process.env.OAUTH2_CLIENT_ID || '',
+            oauth2ClientSecret: process.env.OAUTH2_CLIENT_SECRET || '',
+            oauth2AuthorizeEndpoint: process.env.OAUTH2_AUTHORIZE_ENDPOINT || 'https://accounts.google.com/o/oauth2/v2/auth',
+            oauth2TokenEndpoint: process.env.OAUTH2_TOKEN_ENDPOINT || 'https://www.googleapis.com/oauth2/v4/token',
+            oauth2UserInfoEndpoint: process.env.OAUTH2_USER_INFO_ENDPOINT || 'https://www.googleapis.com/oauth2/v3/userinfo',
+            oauth2ProviderDisplayName: process.env.OAUTH2_PROVIDER_DISPLAY_NAME || 'Google',
+            roleForOAuth2User: process.env.OAUTH2_USER_ROLE || 'default',
+        };
+    }
 
+}

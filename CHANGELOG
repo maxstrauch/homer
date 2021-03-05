@@ -1,3 +1,7 @@
+v1.8.0
+======
+ * Feat: Integration of OAuth2 SSO option (see README for documentation) for federated login
+
 v1.7.0
 ======
  * Feat: initial commit on GitHub & availability for the public

@@ -6,11 +6,24 @@
         </div>
         
         <form v-on:submit="onLogin($event)">
-            <div v-if="loginErrMsg" v-bind:class="errorBoxClasses">
+            <div v-if="loginErrMsg || ssoErrorMessage" v-bind:class="errorBoxClasses">
                 <button v-on:click="onCloseMessage($event)" class="btn btn-clear float-right"></button>
-                Das Anmelden ist leider fehlgeschlagen. Existieren Benutzername und Passwort? Bitte erneut versuchen!
+                <span v-if="ssoErrorMessage">
+                    Das Anmelden über den Single Sign-On ist leider fehlgeschlagen: {{ ssoErrorMessage }}
+                </span>
+                <span v-else>
+                    Das Anmelden ist leider fehlgeschlagen. Existieren Benutzername und Passwort? Bitte erneut versuchen!
+                </span>
             </div>
-            
+
+            <div v-if="ssoEnabled" class="sso-container">
+                <button class="btn btn-success" type="button" v-on:click="onSSOLogin($event)">
+                    <i class="material-icons">lock</i>
+                    {{ ssoEnabled.name }} Single Sign-on
+                </button>
+                <hr/>
+            </div>
+
             <div class="input-container">
                 <div class="input-group">
                     <span class="input-group-addon">
@@ -34,7 +47,7 @@
         </form>
 
         <div class="footer">
-            &copy; 2020. <a href="https://github.com/maxstrauch/homer/" target="_blank" rel="noopener noreferrer">Homer - The Homeoffice Manager</a>. Designed and built with <span class="text-error">♥</span> by <a href="https://maxstrauch.github.io/" target="_blank" rel="noopener noreferrer">Max</a>.
+            &copy; 2020 - {{ new Date().getFullYear() }}. <a href="https://github.com/maxstrauch/homer/" target="_blank" rel="noopener noreferrer">Homer - The Homeoffice Manager</a>. Designed and built with <span class="text-error">♥</span> by <a href="https://maxstrauch.github.io/" target="_blank" rel="noopener noreferrer">Max</a>.
         </div>
     </div>
 </template>
@@ -43,6 +56,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { createLogger, Logger } from '../services/logger.service';
 import { AuthService } from '../services/auth.service';
+import { SSOEnabledResponse } from '@/models/APILoginResponse';
 import HomerLogo from '../components/HomerLogo.vue';
 
 @Component({
@@ -69,8 +83,24 @@ export default class Login extends Vue {
 
     hideTimeoutHandle!: NodeJS.Timeout;
 
+    ssoEnabled: SSOEnabledResponse | null = null;
+
+    ssoErrorMessage: string | null = null;
+
     mounted() {
         (this.$refs.usernameInput as HTMLInputElement).focus();
+
+        AuthService.getInstance().isOAuth2Supported().then((e) => {
+            this.ssoEnabled = e;
+        }).catch(err => {
+            this.ssoEnabled = null;
+        });
+        
+        if (this.$route.query.error === '1' && this.$route.query.errmsg) {
+            this.ssoErrorMessage = this.$route.query.errmsg;
+        }
+
+        console.log();
     }
 
     async onLogin(evt: Event) {
@@ -84,6 +114,12 @@ export default class Login extends Vue {
             this.hideTimeoutHandle = setTimeout(this.onCloseMessage, 8400);
         } else {
             this.$router.push('/');
+        }
+    }
+
+    onSSOLogin() {
+        if (this.ssoEnabled) {
+            window.location.href = this.ssoEnabled.authRedirectUrl;
         }
     }
 
@@ -145,6 +181,28 @@ export default class Login extends Vue {
 
         .toast {
             border-radius: 8px 8px 0 0;
+        }
+
+        .sso-container {
+            width: 100%;
+            padding: 2rem 2rem 0 2rem;
+
+            button {
+                width: 100%;
+                font-size: 110%;
+                transition: all ease-in-out 210ms;
+                cursor: pointer;
+
+                &:hover {
+                    transform: scale(1.025);
+                }
+            }
+
+            hr {
+                border: none;
+                border-bottom: 0.05rem solid #bcc3ce;
+                margin-top: 1.5rem;
+            }
         }
 
         .input-container {

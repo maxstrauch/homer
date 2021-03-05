@@ -2,3 +2,5 @@ _private/*
 .DS_Store
 Thumbs.db
 .vscode/*
+.env
+node_modules

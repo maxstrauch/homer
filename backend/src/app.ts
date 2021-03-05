@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -28,12 +31,14 @@ import {
     AutoLogin,
     Version,
     Events,
+    SupportsOAuthLogin,
+    PerformOAuthLogin,
+    AssertOAuthLogin,
 } from "./endpoints";
 import { requireRole } from "./middlewares/hasRole";
 import { initHooks } from "./webhooks";
 
 async function main() {
-
     await initStorage();
     await initHooks();
 
@@ -55,6 +60,9 @@ async function main() {
 
     const router = express.Router();
 
+    router.get('/auth/sso/supported', a(SupportsOAuthLogin));
+    router.get('/auth/sso/auth', a(PerformOAuthLogin));
+    router.get('/auth/sso/assert', a(AssertOAuthLogin));
 
     router.get('/status', a(Version));
     router.post('/login', a(Login));

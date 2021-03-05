@@ -15,6 +15,9 @@ import { DeleteEmployee } from "./deleteEmployee";
 import { ListEmployees } from "./listEmployees";
 import { Version } from "./version";
 import { Events } from "./events";
+import { SupportsOAuthLogin } from "./supportsOAuthLogin";
+import { PerformOAuthLogin } from "./performOAuthLogin";
+import { AssertOAuthLogin } from "./assertOAuthLogin";
 
 export {
     ChangeEmployeeState,
@@ -35,4 +38,7 @@ export {
     AutoLogin,
     Version,
     Events,
+    SupportsOAuthLogin,
+    PerformOAuthLogin,
+    AssertOAuthLogin,
 };

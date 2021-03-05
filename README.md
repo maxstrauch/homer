@@ -29,6 +29,7 @@ You can certainly use a fixed version (and should on production). The database f
  * Simple app, focused on one use-case: _who is where?_
  * Add employees with photos and names
  * Set the state of employees (Homeoffice, customer appointment, pause, offline)
+ * Single Sign-On (SSO) via any compatible OAuth2 identity provider (Google, ...)
  * Create independent accounts to login
  * Create login-links (no username/password needed for login)
  * Slack integration to get notifications who changed state
@@ -48,6 +49,20 @@ Initially I wanted to use the project _"only"_ to try out new technologies (I'm 
 
 The tool developed more and more into a productive tool, when it got introduced as the main tool to visually see the presence at my current employer. It has been tested in a "private beta" there since February 2020. And finally I'm going to release it to the public.
 
+# Single Sign-On configuration
+
+In order to use Single Sign-On support, the following environment variables need to be set for the container:
+
+- `EXTERNAL_APP_BASE_URL`: The base URL of the app, e.g. _https://homer.example.org/_
+- `OAUTH2_CLIENT_ID`: The client id, configured at your OAuth2 IdP
+- `OAUTH2_CLIENT_SECRET`: The client secret, configured at your OAuth2 IdP
+- `OAUTH2_AUTHORIZE_ENDPOINT`: The URL to the OAuth2 compatible authorization (frontend flow) API endpoint, e.g. for Google SSO: _https://accounts.google.com/o/oauth2/v2/auth_ __(default)__
+- `OAUTH2_TOKEN_ENDPOINT`: The URL to the OAuth2 compatible token API endpoint, e.g. for Google SSO: _https://www.googleapis.com/oauth2/v4/token_ __(default)__
+- `OAUTH2_USER_INFO_ENDPOINT`: The URL to the OAuth2 user information endpoint, e.g. for Google SSO: _https://www.googleapis.com/oauth2/v3/userinfo_ __(default)__
+- `OAUTH2_PROVIDER_DISPLAY_NAME`: Display name (shown in the app) for the OAuth2 IdP, e.g. _Google_ __(default)__
+- `OAUTH2_USER_ROLE`: The role which is assigned by Homer to any user which loggs in via SSO. It can be one of the following values: `*` for admin, `kiosk` to view Homer only or `default` __(default)__ to read and write
+
+Besides this you need to configure the "assert" endpoint (where the user is redirected after successful login at the IdP). It's value is `${EXTERNAL_APP_BASE_URL}/api/auth/sso/assert` (also printed out on service start to stdout).
 
 # Upcoming features
 
@@ -58,7 +73,6 @@ The following features are planned for the near future (whenever I have some spa
  * Favicon shows the current state (if previous enabled)
  * Dynamic states: new can be created
  * Fixup of long-term execution (browser tab never closed) issues
- * SSO with e.g. OAuth2 and Google SSO
  * Get details about the last state change
  * Cleanup of legacy stuff
 
