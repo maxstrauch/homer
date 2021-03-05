@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { debug } from 'debug';
 import * as httpErrors from 'http-errors';
-import { ValidationError } from "@hapi/joi";
+import { ValidationError } from "joi";
 import { MulterError } from "multer";
 
 const logger = debug('app:errorHandler');

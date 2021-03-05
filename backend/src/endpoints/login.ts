@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import * as Joi from '@hapi/joi';
-import { Schema } from '@hapi/joi';
+import * as Joi from 'joi';
+import { Schema } from 'joi';
 import * as jwt from 'jsonwebtoken';
 import { Config } from "../config";
 import { UserEntity } from "../models/UserEntity";
@@ -43,7 +43,7 @@ export async function Login(req: Request, res: Response) {
 
 export async function AutoLogin(req: Request, res: Response) {
 
-    const user = await UserEntity.findById(req.query.id);
+    const user = await UserEntity.findById(req.query.id as string);
 
     if (user.apiToken !== req.query.token) {
         throw new createHttpError.Unauthorized(`Invalid credentials!`);

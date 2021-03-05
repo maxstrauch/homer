@@ -1,6 +1,6 @@
 import { Response } from "express";
-import * as Joi from '@hapi/joi';
-import { Schema } from '@hapi/joi';
+import * as Joi from 'joi';
+import { Schema } from 'joi';
 import { debug } from 'debug';
 import { UserEntity } from "../models/UserEntity";
 import { hasRole } from "../middlewares/hasRole";

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { UserEntity } from "../models/UserEntity";
 
 export async function DeleteUser(req: Request, res: Response) {

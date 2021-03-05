@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { EmployeeEntity } from "../models/Employee";
 import { debug } from 'debug';
 import { dispatchAction } from "../webhooks";

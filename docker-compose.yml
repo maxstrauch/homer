@@ -6,7 +6,7 @@ services:
     volumes:
       - ./backend:/app
     restart: always
-    command: bash -c "cd /app && npm i && npm run dev"
+    command: bash -c "cd /app && npm run dev"
     environment:
       PORT: 8080
 
@@ -17,4 +17,4 @@ services:
     restart: always
     ports:
       - "1234:8080"
-    command: bash -c "cd /app && npm i && npm run dev"
+    command: bash -c "cd /app && npm run dev"

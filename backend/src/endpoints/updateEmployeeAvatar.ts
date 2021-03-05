@@ -1,5 +1,5 @@
 import { Response } from "express";
-import * as Joi from '@hapi/joi';
+import * as Joi from 'joi';
 import { debug } from 'debug';
 import { EmployeeEntity } from "../models/Employee";
 import createHttpError = require("http-errors");

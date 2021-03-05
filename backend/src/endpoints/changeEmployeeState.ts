@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Schema } from '@hapi/joi';
-import * as Joi from '@hapi/joi';
+import { Schema } from 'joi';
+import * as Joi from 'joi';
 import { debug } from 'debug';
 import { EmployeeEntity } from "../models/Employee";
 import { StateEntity } from "../models/ActivityEntity";
