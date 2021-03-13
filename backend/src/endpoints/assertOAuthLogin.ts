@@ -3,6 +3,7 @@ import { OAuth2CallbackResponse, OAuth2UserData, validateOAuth2CallbackResponse 
 import { Config } from "../config";
 import { AuthInfo } from "../models/AuthenticatedRequest";
 import * as jwt from 'jsonwebtoken';
+import { UserEntity } from "../models/UserEntity";
 const urlJoin = require('url-join');
 
 export async function AssertOAuthLogin(req: Request, res: Response) {
@@ -24,9 +25,21 @@ export async function AssertOAuthLogin(req: Request, res: Response) {
         name: ret.email || ret.name,
         roles: [
             Config.OAUTH_SETTINGS.roleForOAuth2User || 'default',
-        ]
+        ],
+        isSSO: true,
     };
     payloadToken.exp = Date.now() + 1000*24*60*60 * Config.USER_TOKEN_EXP_DAYS;
+
+    // Check if there is a user with that name to "overlay" it
+    const user = await UserEntity.findOne({
+        where: {
+            name: ret.email || ret.name
+        },
+    });
+    if (user) {
+        payloadToken.roles = user.getRoles();
+        payloadToken.id = `${user.id}`;
+    }
 
     const token = jwt.sign(payloadToken, Config.JWT_SECRET);
     

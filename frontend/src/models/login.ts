@@ -14,4 +14,5 @@ export interface LoginToken {
     roles: string[];
     exp: number;
     isKioskView?: boolean; // TODO: check if present always
+    isSSO?: boolean;
 } 

@@ -97,7 +97,7 @@ export default class Login extends Vue {
         });
         
         if (this.$route.query.error === '1' && this.$route.query.errmsg) {
-            this.ssoErrorMessage = this.$route.query.errmsg;
+            this.ssoErrorMessage = this.$route.query.errmsg as string;
         }
 
         console.log();

@@ -21,7 +21,7 @@
                         <i class="material-icons mi-std">person</i>
                     </a>
                     <ul class="menu">
-                        <li class="menu-item">
+                        <li class="menu-item" v-if="!isSSO">
                             <a href="#" v-has-role="'default'" v-on:click="isPasswordChangeDialogShown = true">
                                 <i class="material-icons">vpn_key</i> Passwort ändern
                             </a>
@@ -54,8 +54,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import AboutDialog from '../components/AboutDialog.vue';
-import Toaster from '../components/Toaster.vue';
-import { ToastService } from '../services/toast.service';
 import UserChangePasswordDialog from '../components/UserChangePasswordDialog.vue';
 import HomerLogo from '../components/HomerLogo.vue';
 import Login from '../views/Login.vue'
@@ -90,6 +88,11 @@ export default class Home extends Vue {
         if ((await this.authService.logout())) {
             this.$router.push({ name: 'Login' });
         }
+    }
+
+    get isSSO(): boolean {
+        const isSSO = this.authService.getTokenValue<boolean | number>('isSSO');
+        return (isSSO === true || isSSO !== 0) ? true : false;
     }
 
 }

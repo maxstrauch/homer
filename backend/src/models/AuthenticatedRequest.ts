@@ -10,4 +10,5 @@ export interface AuthInfo {
     id: string;
     exp?: number;
     isKioskView?: boolean;
+    isSSO?: boolean;
 }

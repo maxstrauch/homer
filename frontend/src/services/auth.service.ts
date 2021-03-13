@@ -47,6 +47,10 @@ export class AuthService extends RestService {
         return `${this.loginToken?.id || ''}`;
     }
 
+    getTokenValue<T>(key: (keyof LoginToken)): T | null {
+        return this.loginToken ? ((typeof this.loginToken[key]) !== 'undefined' ? (this.loginToken[key] as unknown as T): null) : null;
+    }
+
     getUserName(): string {
         return `${this.loginToken?.name || ''}`;
     }
