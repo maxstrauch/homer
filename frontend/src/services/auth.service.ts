@@ -7,6 +7,7 @@ import { ToastService } from './toast.service';
 import { SSOEnabledResponse } from '@/models/APILoginResponse';
 
 export const LOCAL_STORAGE_SETTINGS_KEY = "homer.userData";
+export const LOCAL_STORAGE_SETTINGS_WHILE_LOGOUT_KEY = "hUserDataLongterm";
 export const COOKIE_TOKEN_NAME = "htoken";
 export const LOCAL_STORAGE_API_KEY = "apiKey";
 
@@ -89,6 +90,17 @@ export class AuthService extends RestService {
 
             this.loadToken(ret.token);
 
+            // Try to recover the last user data
+            try {
+                if (this.loginToken && this.loginToken.id) {
+                    const origData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_WHILE_LOGOUT_KEY) || '{}');
+                    if (this.loginToken.id in origData) {
+                        localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(origData[this.loginToken.id]));
+                        this.loadProperties();
+                    }
+                }
+            } catch (ex) { /* Silence is gold */ }
+
             return true;
         } catch (ex) {
             return false;
@@ -113,6 +125,18 @@ export class AuthService extends RestService {
     async logout(): Promise<boolean> {
         document.cookie = 'htoken=; Max-Age=-99999999;';
         localStorage.removeItem(LOCAL_STORAGE_API_KEY);
+        
+        // Save the userdata by user-id to later get the correct ones
+        try {
+            if (this.loginToken && this.loginToken.id) {
+                const origData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_WHILE_LOGOUT_KEY) || '{}');
+                localStorage.setItem(LOCAL_STORAGE_SETTINGS_WHILE_LOGOUT_KEY, JSON.stringify({
+                    ...origData,
+                    [this.loginToken.id]: JSON.parse(localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY) || '')
+                }));
+            }
+        } catch (ex) { /* Silence is gold */ }
+
         localStorage.removeItem(LOCAL_STORAGE_SETTINGS_KEY);
         Cookies.remove(COOKIE_TOKEN_NAME);
         this.apiToken = null;

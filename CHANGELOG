@@ -1,6 +1,9 @@
 v1.8.0
 ======
  * Feat: Integration of OAuth2 SSO option (see README for documentation) for federated login
+ * Feat: Quick state toggle button in the middle of the navigation bar (if available)
+ * Fix: Save user-browser-data to the localStorage while signed out
+ * Fix: Allow multiple users to use Homer with the same browser without overlapping user-browser-data
 
 v1.7.0
 ======

@@ -18,6 +18,7 @@ import { Events } from "./events";
 import { SupportsOAuthLogin } from "./supportsOAuthLogin";
 import { PerformOAuthLogin } from "./performOAuthLogin";
 import { AssertOAuthLogin } from "./assertOAuthLogin";
+import { GetEmployeeById } from "./getEmployee";
 
 export {
     ChangeEmployeeState,
@@ -41,4 +42,5 @@ export {
     SupportsOAuthLogin,
     PerformOAuthLogin,
     AssertOAuthLogin,
+    GetEmployeeById,
 };

@@ -33,6 +33,7 @@ You can certainly use a fixed version (and should on production). The database f
  * Create independent accounts to login
  * Create login-links (no username/password needed for login)
  * Slack integration to get notifications who changed state
+ * Quick employee state toggle
  * Beautifully designed 😉
 
 _Please have also a look at the `CHANGELOG` file with the full change history, if you are interested._
@@ -69,7 +70,6 @@ Besides this you need to configure the "assert" endpoint (where the user is redi
 The following features are planned for the near future (whenever I have some spare time for it 😉):
 
  * Add translation of English / German language with switcher
- * Quick selector for my employee to show up in the main nav-bar and to quickly toggle states
  * Favicon shows the current state (if previous enabled)
  * Dynamic states: new can be created
  * Fixup of long-term execution (browser tab never closed) issues

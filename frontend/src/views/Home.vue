@@ -10,6 +10,23 @@
                 </div>
             </div>
             <div class="flex-grow-1"></div>
+            <div v-if="hasQuickStateToggle && !!quickStateToggleEmployee" class="quick-toggle-wrapper">
+                <div class="quick-toggle" v-bind:class="getAvatarClassesForToggle()" v-on:click="isStateChangeDialogShown = true">
+                    <div class="main-wrap-button">
+                        <span>
+                            {{quickStateToggleEmployee.name}}
+                        </span>
+                    </div>
+                    <div class="main-wrap-avatar">
+                        <div class="s-circle avatar-circle" v-bind:style="getAvatarBackgroundImageStyleForQuickToggle()">
+                            <span v-if="hasNoBackgroundImage()" class="no-bg-image">
+                                {{quickStateToggleEmployee.abbr}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-grow-1"></div>
             <div class="ctrls-container">
                 <router-link to="/admin" v-has-role="'*'" class="btn btn-secondary dropdown-toggle" tabindex="0" type="button">
                     <i class="material-icons">settings</i>
@@ -48,6 +65,8 @@
         <about-dialog v-if="isAboutDialogShown" v-on:close="isAboutDialogShown = false"></about-dialog>
 
         <user-change-password-dialog v-if="isPasswordChangeDialogShown" v-on:close="isPasswordChangeDialogShown = false" v-bind:user-id="currentUserId"></user-change-password-dialog>
+
+        <employee-state-change-dialog v-if="isStateChangeDialogShown && !!quickStateToggleEmployee" v-on:close="isStateChangeDialogShown = false" v-bind:employee="quickStateToggleEmployee"></employee-state-change-dialog>        
   </div>
 </template>
 
@@ -55,9 +74,14 @@
 import { Component, Vue } from 'vue-property-decorator';
 import AboutDialog from '../components/AboutDialog.vue';
 import UserChangePasswordDialog from '../components/UserChangePasswordDialog.vue';
+import EmployeeStateChangeDialog from '../components/EmployeeStateChangeDialog.vue';
 import HomerLogo from '../components/HomerLogo.vue';
 import Login from '../views/Login.vue'
 import { AuthService } from '../services/auth.service';
+import { EmployeeStateTransision, LAST_STATE_TRANSISIONS_KEY } from '../definitions';
+import { DataService } from '../services/data.service';
+import { Employee } from '../models/employee';
+import { EventService, TOPIC_EMPLOYEE_STATE_CHANGE, Unsubscribe } from '../services/event.service';
 
 @Component({
 name: 'Home',
@@ -66,11 +90,13 @@ name: 'Home',
     AboutDialog,
     UserChangePasswordDialog,
     HomerLogo,
+    EmployeeStateChangeDialog
   },
 })
 export default class Home extends Vue {
 
     private authService: AuthService = AuthService.getInstance();
+    private dataService: DataService = DataService.getInstance();
 
     currentUserId!: string;
     isKioskView!: boolean;
@@ -78,10 +104,32 @@ export default class Home extends Vue {
     isPasswordChangeDialogShown: boolean = false;
     userName!: string;
 
+    isSSO: boolean = false;
+
+    hasQuickStateToggle: boolean = false;
+    quickStateToggleEmployee: Employee | null = null;
+
+    isStateChangeDialogShown: boolean = false;
+
+    subscription: Unsubscribe | null = null;
+
     created() {
         this.currentUserId = this.authService.userId;
         this.userName = this.authService.getUserName();
         this.isKioskView = this.authService.isKioskView();
+
+        const isSSO = this.authService.getTokenValue<boolean | number>('isSSO');
+        this.isSSO = (isSSO === true || isSSO === 1);
+
+        this.subscription = EventService.subscribe<string | null>(TOPIC_EMPLOYEE_STATE_CHANGE, _ => {
+            this.updateQuickStateToggleState();
+        });
+    }
+
+    beforeDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     async onLogout() {
@@ -90,10 +138,69 @@ export default class Home extends Vue {
         }
     }
 
-    get isSSO(): boolean {
-        const isSSO = this.authService.getTokenValue<boolean | number>('isSSO');
-        return (isSSO === true || isSSO !== 0) ? true : false;
+    hasNoBackgroundImage() {
+        return !this.quickStateToggleEmployee || !this.quickStateToggleEmployee.avatarUrl;
     }
+
+    getAvatarBackgroundImageStyleForQuickToggle() {
+        if (this.hasNoBackgroundImage()) {
+            return {};
+        }
+
+        return { backgroundImage: 'url(' + (this.quickStateToggleEmployee?.avatarUrl || '') + ')' };
+    }
+
+    getAvatarClassesForToggle() {
+        const item = this.quickStateToggleEmployee;
+        if (!item) {
+            return {};
+        }
+
+        const classes = {
+            'active-ho': item.state.state === 'HOMEOFFICE', 
+            'active-pause': item.state.state === 'PAUSE',
+            'active-cust': item.state.state === 'CUSTOMER',
+        };
+        return classes;
+    }    
+
+    async updateQuickStateToggleState() {
+        const trans = this.authService.getProperty<EmployeeStateTransision[]>(LAST_STATE_TRANSISIONS_KEY, []);
+        const uid = this.getCurrentUserForEmployeeStateTransisions(trans);
+        this.hasQuickStateToggle = uid !== null;
+
+        if (uid !== null) {
+            this.quickStateToggleEmployee = await this.dataService.getEmployeeById(uid);
+        }
+    }
+
+
+    getCurrentUserForEmployeeStateTransisions(trans: EmployeeStateTransision[]): string | null {
+        if (!trans || !Array.isArray(trans) || trans.length < 1) {
+            return null;
+        }
+
+        // Count the results
+        const probMap: { [key: string]: number; } = {};
+        trans.forEach((v: EmployeeStateTransision) => {
+            if ((typeof probMap[v.employeeId]) === 'undefined') {
+                probMap[v.employeeId] = 0;
+            }
+            probMap[v.employeeId]++;
+        });
+
+        // Get the highest match
+        let maxCount = -1;
+        let userId = null;
+        for (let key in probMap) {
+            if (probMap[key] > maxCount) {
+                maxCount = probMap[key];
+                userId = key;
+            }
+        }
+
+        return userId;
+    }   
 
 }
 
@@ -143,6 +250,86 @@ nav#main-nav {
 
     .ctrls-container {
         padding: .5rem;
+    }
+
+    .quick-toggle-wrapper {
+        display: flex;
+        align-items: center;
+
+        .quick-toggle {
+            border: solid 2px #dfdfdf;
+            background-color: #f3f3f3;
+            padding: .25rem;
+            border-radius: 2rem;
+            display: flex;
+            flex-direction: row;
+            transition: all ease-in-out 210ms;
+            cursor: pointer !important;
+
+
+            &.active-ho {
+                background-color: #32b64418;
+                border-color: #2faa3f49;
+            }
+
+            &.active-ho:hover {
+                background-color: #32b6432e;
+                border-color: #2faa3f91;
+            }
+
+            &.active-pause {
+                background-color: #b6a93218;
+                border-color:  #aaa22f49;
+            }
+
+            &.active-pause:hover {
+                background-color: #b6a9322e;
+                border-color:  #aaa22f91;
+            }
+
+            &.active-cust {
+                background-color: #327bb618;
+                border-color:  #2f73aa49;
+            }
+
+            &.active-cust:hover {
+                background-color: #327bb62e;
+                border-color:  #2f73aa91;
+            }
+
+            .main-wrap-button {
+                flex-grow: 1;
+                padding-right: .25rem;
+                display: flex;
+                align-items: center;
+
+                span {
+                    min-width: 4rem;
+                    padding-left: .5rem;
+                    padding-right: .5rem;
+                }
+            }
+
+            .main-wrap-avatar {
+
+                .avatar-circle {
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    background-position: center;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-color: white;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                }
+
+                .no-bg-image {
+                    font-size: 70%;
+                }
+            }
+        }
     }
 }
 

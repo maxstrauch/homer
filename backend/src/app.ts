@@ -34,6 +34,7 @@ import {
     SupportsOAuthLogin,
     PerformOAuthLogin,
     AssertOAuthLogin,
+    GetEmployeeById,
 } from "./endpoints";
 import { requireRole } from "./middlewares/hasRole";
 import { initHooks } from "./webhooks";
@@ -75,6 +76,7 @@ async function main() {
     // ----
     router.post('/employees', requireRole('default'), a(CreateEmployee));
     router.get('/employees', a(ListEmployees));
+    router.get('/employees/:id', a(GetEmployeeById));
     router.put('/employees/:id', requireRole('default'), a(UpdateEmployee));
     router.delete('/employees/:id', requireRole('default'), a(DeleteEmployee));
     router.get('/employees/:id/avatar', a(GetAvatar));

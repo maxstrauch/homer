@@ -5,6 +5,8 @@ import axios from 'axios';
 import { Logger, createLogger } from './logger.service';
 import { User, CreateUser } from '../models/User';
 import { ApiResponse } from '@/models/api-response';
+import { EmployeeStateTransision, LAST_STATE_TRANSISIONS_KEY, LAST_STATE_TRANSISIONS_MAX } from '@/definitions';
+import { EventService, TOPIC_EMPLOYEE_STATE_CHANGE } from './event.service';
 
 let INSTANCE: DataService | null = null;
 
@@ -39,6 +41,12 @@ export class DataService extends RestService {
         return (emps.data || []) as any[];
     }
 
+    async getEmployeeById(id: string): Promise<Employee> { 
+        const emps: any = await this.httpGet(`employees/${id}`);
+        this.logger.info("Loaded employee for id:", id, emps);
+        return emps.data as Employee;
+    }    
+
     async setEmployeeState(employeeId: string, state: string, description?: string): Promise<void> {
         try {
             await this.httpPut<UpdateEmployeeStateRequest>(
@@ -49,6 +57,18 @@ export class DataService extends RestService {
                 },
                 true
             );
+
+            // Store the last state transitions inside the local store
+            const lastChanges = this.authService.getProperty<EmployeeStateTransision[]>(LAST_STATE_TRANSISIONS_KEY, []);
+            lastChanges.push({
+                actionAt: new Date().toISOString(),
+                employeeId: employeeId,
+                targetState: state,
+            });
+            while (lastChanges.length > LAST_STATE_TRANSISIONS_MAX) {
+                lastChanges.shift();
+            }
+            this.authService.setProperty<EmployeeStateTransision[]>(LAST_STATE_TRANSISIONS_KEY, lastChanges);
         } catch (ex) {
             this.handleErrorInternally(ex);
             throw ex;
@@ -88,6 +108,13 @@ export class DataService extends RestService {
                     evtHandler(parsedData.evt, parsedData.p || {});
                 } else if (!filter) {
                     evtHandler(parsedData.evt, parsedData.p || {});
+                }
+
+                // Forward events
+                if (parsedData.evt === 'OnConnect') {
+                    EventService.emit<string | null>(TOPIC_EMPLOYEE_STATE_CHANGE, null);
+                } else if (parsedData.evt === 'EmployeeStateChange') {
+                    EventService.emit<string | null>(TOPIC_EMPLOYEE_STATE_CHANGE, parsedData.p?.employee?.id || null);
                 }
             } catch (ex) {
                 this.logger.error(`Cannot parse event data from server:`, ex, eventData);
