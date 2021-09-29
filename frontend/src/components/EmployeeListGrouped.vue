@@ -40,6 +40,11 @@ export default class EmployeeListGrouped extends Vue {
                 icon: 'home_work',
             },
             {
+                key: 'OFFICE',
+                name: 'Im Büro',
+                icon: 'business',
+            },
+            {
                 key: 'CUSTOMER',
                 name: 'Kundentermin',
                 icon: 'calendar_today',

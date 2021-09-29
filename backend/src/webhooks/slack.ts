@@ -91,6 +91,16 @@ export async function onAction(event: string, evt: EmployeeStateChange) {
         return;
     }
 
+    // If user comes online in the office
+    if (triggerIf(
+        evt, 
+        [ States.OFFLINE, null ], 
+        [ States.OFFICE ],
+        `${evt.employee.name} ist jetzt im Büro anwesend ${getRandEmoji(EMOJI_SMILEYS, EMOJI_PETS)}${umsg}`
+    )) {
+        return;
+    }
+
     // If user comes online into the customer office
     if (triggerIf(
         evt, 
@@ -104,7 +114,7 @@ export async function onAction(event: string, evt: EmployeeStateChange) {
     // If user leaves
     if (triggerIf(
         evt,
-        [ States.CUSTOMER, States.PAUSE, States.HOMEOFFICE ],
+        [ States.CUSTOMER, States.PAUSE, States.HOMEOFFICE, States.OFFICE ],
         [ States.OFFLINE ],
         `${evt.employee.name} ist jetzt raus ${getRandEmoji(EMOJI_HANDS)}${umsg}`
     )) {
@@ -114,7 +124,7 @@ export async function onAction(event: string, evt: EmployeeStateChange) {
     // If user goes to break
     if (triggerIf(
         evt,
-        [ States.CUSTOMER, States.OFFLINE, States.HOMEOFFICE ],
+        [ States.CUSTOMER, States.OFFLINE, States.HOMEOFFICE, States.OFFICE ],
         [ States.PAUSE ],
         `${evt.employee.name} macht mal Pause ${getRandEmoji(EMOJI_BREAK)}${umsg}`
     )) {
@@ -125,7 +135,7 @@ export async function onAction(event: string, evt: EmployeeStateChange) {
     if (triggerIf(
         evt,
         [ States.PAUSE ],
-        [ States.CUSTOMER, States.OFFLINE, States.HOMEOFFICE ],
+        [ States.CUSTOMER, States.OFFLINE, States.HOMEOFFICE, States.OFFICE ],
         `${evt.employee.name} ist wieder da ${getRandEmoji(EMOJI_SMILEYS, EMOJI_PETS)}${umsg}`
     )) {
         return;
@@ -140,6 +150,8 @@ export async function onAction(event: string, evt: EmployeeStateChange) {
                 return 'Abwesend';
             case States.HOMEOFFICE:
                 return 'Im Homeoffice';
+            case States.OFFICE:
+                return 'Im Büro';
             case States.CUSTOMER:
                 return 'Beim Kunden';
             default:

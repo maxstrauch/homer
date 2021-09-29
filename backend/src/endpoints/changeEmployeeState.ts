@@ -9,12 +9,12 @@ import { dispatchAction } from "../webhooks";
 const logger = debug('app:changeEmployeeState');
 
 interface RequestDto {
-    state: 'HOMEOFFICE' | 'CUSTOMER' | 'PAUSE' | 'OFFLINE';
+    state: 'HOMEOFFICE' | 'OFFICE' | 'CUSTOMER' | 'PAUSE' | 'OFFLINE';
     description: string;
 }
 
 const MODEL: Schema = Joi.object().keys({
-    state: Joi.string().allow('HOMEOFFICE', 'PAUSE', 'CUSTOMER', 'OFFLINE').insensitive().only().required(),
+    state: Joi.string().allow('HOMEOFFICE', 'OFFICE', 'PAUSE', 'CUSTOMER', 'OFFLINE').insensitive().only().required(),
     description: Joi.alternatives(Joi.string().min(1).max(1000), Joi.string().allow("")).optional()
 });
 

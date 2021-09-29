@@ -155,6 +155,12 @@ export class DataService extends RestService {
                 description: 'Im Homeoffice anwesend melden',
             },
             {
+                id: 'OFFICE',
+                icon: 'business',
+                name: 'Büro',
+                description: 'Im Büro anwesend melden',
+            },
+            {
                 id: 'PAUSE',
                 icon: 'free_breakfast',
                 name: 'Pause',

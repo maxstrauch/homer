@@ -7,6 +7,7 @@ const sequelize = getInstance();
 
 export enum States {
     HOMEOFFICE = 'HOMEOFFICE', 
+    OFFICE = 'OFFICE',
     PAUSE = 'PAUSE', 
     CUSTOMER = 'CUSTOMER', 
     OFFLINE = 'OFFLINE'
@@ -23,7 +24,7 @@ export class StateEntity extends Model {
     id: number;
     employeeId: number;
 
-    state: 'HOMEOFFICE' | 'CUSTOMER' | 'PAUSE' | 'OFFLINE';
+    state: 'HOMEOFFICE' | 'OFFICE' | 'CUSTOMER' | 'PAUSE' | 'OFFLINE';
     description: string | null;
 
     employee?: EmployeeEntity;
