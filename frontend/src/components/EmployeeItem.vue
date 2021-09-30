@@ -97,7 +97,7 @@ export default class EmployeeItem extends Vue {
     getAvatarClasses(item: Employee) {
         const classes = {
             'avatar-circle-container': true, 
-            'active-ho': item.state.state === 'HOMEOFFICE', 
+            'active-ho': item.state.state === 'HOMEOFFICE' || item.state.state === 'OFFICE', 
             'active-pause': item.state.state === 'PAUSE',
             'active-cust': item.state.state === 'CUSTOMER',
         };

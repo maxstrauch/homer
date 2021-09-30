@@ -15,8 +15,8 @@ interface RequestFilter {
 }
 
 const MODEL: Schema = Joi.object().keys({
-    state: Joi.string().allow('HOMEOFFICE', 'CUSTOMER', 'OFFLINE').insensitive().only().optional(),
-    notState: Joi.string().allow('HOMEOFFICE', 'CUSTOMER', 'OFFLINE').insensitive().only().optional(),
+    state: Joi.string().allow('HOMEOFFICE', 'OFFICE', 'CUSTOMER', 'OFFLINE').insensitive().only().optional(),
+    notState: Joi.string().allow('HOMEOFFICE', 'OFFICE', 'CUSTOMER', 'OFFLINE').insensitive().only().optional(),
     stateChange: Joi.string().isoDate().optional(),
 });
 

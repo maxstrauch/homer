@@ -5,7 +5,7 @@
         </div>
         <div v-if="!isKioskView" class="header d-flex">
             <div class="btn-group pr-2">
-                <button v-on:click="onChangeViewMode()" class="btn" v-bind:class="{'btn-primary': !isShowAll}">Anwesend im Homeoffice</button>
+                <button v-on:click="onChangeViewMode()" class="btn" v-bind:class="{'btn-primary': !isShowAll}">Anwesend</button>
                 <button v-on:click="onChangeViewMode()" class="btn" v-bind:class="{'btn-primary': isShowAll}">Alle</button>
             </div> 
                 
