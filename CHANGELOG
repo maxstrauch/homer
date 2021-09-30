@@ -1,5 +1,6 @@
 v1.8.0
 ======
+ * Feat: Integration of a new user state "Inside Office" from Infanf (https://github.com/infanf)
  * Feat: Integration of OAuth2 SSO option (see README for documentation) for federated login
  * Feat: Quick state toggle button in the middle of the navigation bar (if available)
  * Fix: Save user-browser-data to the localStorage while signed out

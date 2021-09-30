@@ -16,7 +16,7 @@
                 </span>
             </div>
 
-            <div v-if="ssoEnabled" class="sso-container">
+            <div v-if="ssoEnabled && ssoEnabled.isSupported === true" class="sso-container">
                 <button class="btn btn-success" type="button" v-on:click="onSSOLogin($event)">
                     <i class="material-icons">lock</i>
                     {{ ssoEnabled.name }} Single Sign-on

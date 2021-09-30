@@ -1,6 +1,6 @@
 {
   "name": "homer",
-  "version": "1.6.0",
+  "version": "0.0.0",
   "scripts": {
     "start": "NODE_ENV=production DEBUG=app:* node ./build/app.js",
     "dev": "rm -rf build && DEBUG=app:* tsc-watch --preserveWatchOutput --onSuccess \"node ./build/app.js\"",
@@ -33,7 +33,6 @@
     "terser": "^4.8.0",
     "tsc-watch": "^4.2.9",
     "typescript": "^3.9.9",
-    "url-join": "^4.0.1",
     "vue": "^2.6.12"
   },
   "dependencies": {
@@ -51,7 +50,8 @@
     "sequelize": "^5.22.3",
     "sharp": "^0.24.1",
     "simple-oauth2": "^4.2.0",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "url-join": "^4.0.1"
   },
   "browserify": {
     "transform": [

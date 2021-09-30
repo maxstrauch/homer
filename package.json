@@ -1,6 +1,6 @@
 {
   "name": "homer",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Homer - The Homeoffice Manager. A simple tool to see who is where?",
   "scripts": {
     "dev": "docker-compose up",
